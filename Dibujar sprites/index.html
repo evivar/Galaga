@@ -11,6 +11,36 @@
     <div id='container'>
         <canvas id='game' width='320' height='480'></canvas>
     </div>
+    <div id='botones'>
+        <button type="button" , onclick="drawAllSprites()">
+            Dibujar todos los sprites
+        </button>
+        <div id='selector'>
+            <select id='sprites'>
+                <option>
+
+                </option>
+                <option value="ship">
+                    Nave del jugador
+                </option>
+                <option value="enemy_purple">
+                    Nave enemiga morada
+                </option>
+                <option value="enemy_bee">
+                    Nave enemiga naranja
+                </option>
+                <option value="enemy_ship">
+                    Nave enemiga gris
+                </option>
+                <option value="enemy_circle">
+                    Nave enemiga verde
+                </option>
+            </select>
+            <button type="button" , onclick="drawSelectedSprite(showSprite())">
+                <p id="name">Dibujar Sprite </p>
+            </button>
+        </div>
+    </div>
     <script src='engine.js'></script>
     <script src='game.js'></script>
 </body>
