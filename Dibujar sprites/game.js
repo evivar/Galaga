@@ -97,13 +97,15 @@ function drawSelectedSprite(sprite) {
     ctx.fillRect(50, 100, 380, 400);
     ctx.fillStyle = "rgba(0,0,128,0.5)";
     ctx.fillRect(25, 50, 380, 400);
-    console.log(sprite);
-    console.log(sprites[sprite]);
+    if (sprite != "") {
+        document.getElementById('info').innerHTML = sprite + ": " + "sx: " + sprites[sprite].sx + ", sy: " + sprites[sprite].sy + ", w: " +
+            sprites[sprite].w + ", h: " + sprites[sprite].h + ", frames: " + sprites[sprite].frames;
+    } else {
+        document.getElementById('info').innerHTML = "No has seleccionado ningun sprite";
+    }
     if (sprite != '') {
         SpriteSheet.load(sprites, function () {
             SpriteSheet.draw(ctx, sprite, 100, 100);
         });
-    } else {
-        console.log("No has seleccionado sprite");
     }
 }
