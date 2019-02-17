@@ -9,3 +9,8 @@
 canvas {
     background-color: black;
 }
+
+.col{
+    display: flex;
+    margin-left: 20px;
+}

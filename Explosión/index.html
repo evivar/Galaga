@@ -10,11 +10,13 @@
 <body>
     <div id='container'>
         <canvas id='game' width='320' height='480'></canvas>
-    </div>
-    <div id ='container'>
-        
-        <button onclick="drawExplosionHigh2Low()">Dibujar explosión 1</button>
-        <button onclick="drawExplosionHigh2Low()">Dibujar explosión 1</button>
+        <br>
+        <div class="row">
+            <div class="col">
+                <button id='boton' onclick="drawExplosionHigh2Low()">Explosión High2Low</button>
+                <button id='boton' onclick="drawExplosionHigh2Low()">Explosión Low2High</button>
+            </div>
+        </div>
     </div>
     <script src='engine.js'></script>
     <script src='game.js'></script>
