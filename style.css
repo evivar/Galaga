@@ -1,4 +1,10 @@
-
+body {
+    background: url(https://images.wallpaperscraft.com/image/grid_colorful_form_9827_1280x720.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: 100%;
+}
 
 .centered {
     margin: 50px auto;
