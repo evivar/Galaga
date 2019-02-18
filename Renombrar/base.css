@@ -1,9 +1,15 @@
 #container {
-    padding-top:50px;
-    margin:0 auto;
-    width:480px;
+    padding-top: 50px;
+    margin: 0 auto;
+    width: 480px;
 }
+
 /* Give canvas a background */
 canvas {
     background-color: black;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }
