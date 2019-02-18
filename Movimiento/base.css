@@ -9,3 +9,13 @@
 canvas {
     background-color: black;
 }
+
+.col{
+    display: flex;
+    margin-left: 20px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
