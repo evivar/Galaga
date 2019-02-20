@@ -181,7 +181,7 @@ var Enemy = function (blueprint, override) {
     this.t = 0;
 }
 
-Enemy.prototype.type = OBJECT_ENEMY; // ESTO ES IMPORTANTE
+// Enemy.prototype.type = OBJECT_ENEMY; // ESTO ES IMPORTANTE
 
 Enemy.prototype.step = function (dt) {
     this.t += dt;
@@ -230,12 +230,13 @@ PlayerMissile.prototype.draw = function (ctx) {
 };
 
 var PlayerMissile = function (x, y) {
-    this.setup('missile', {
-        vy: -700,
-        damage: 10
-    });
+    this.w = SpriteSheet.map['missile'].w;
+    this.h = SpriteSheet.map['missile'].h;
+    // El misil aparece centrado en 'x'
     this.x = x - this.w / 2;
+    // Con la parte inferior del misil en 'y'
     this.y = y - this.h;
+    this.vy = -700;
 };
 
 
@@ -249,17 +250,3 @@ PlayerMissile.prototype.step = function (dt) {
         this.board.remove(this);
     }
 };
-
-var StarField = function (speed, opacity, numStars, clear) { // Terminar del campus
-
-
-    var stars = document.createElement("canvas");
-    stars.width = Game.width;
-    stars.height = Game.height;
-    var offset = 0;
-
-    if (clear) {
-        starCtx.fillStyle = "#FFF";
-    }
-
-}
