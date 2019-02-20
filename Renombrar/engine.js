@@ -3,8 +3,11 @@
 // Clases -> var NombreVar = new function() {}
 var SpriteSheet = new function () {
   // Variables
+
   this.map = {};
+
   // Funciones
+
   // Carga de los sprites
   this.load = function (spriteData, callback) {
     this.map = spriteData;
@@ -12,6 +15,7 @@ var SpriteSheet = new function () {
     this.image.onload = callback;
     this.image.src = 'images/sprites.png';
   };
+
   // Dibuja un sprite especifico en una posicion
   this.draw = function (ctx, sprite, x, y, frame) {
     var s = this.map[sprite];
@@ -23,6 +27,7 @@ var SpriteSheet = new function () {
       x, y,
       s.w, s.h);
   }
+
   // Dibuja la animacion de un sprite
   this.render = function (ctx, sprite, x, y, frame) {
     var s = this.map[sprite];
@@ -34,15 +39,28 @@ var SpriteSheet = new function () {
     ctx.fillRect(x, y, s.w, s.h);
     ctx.drawImage(this.image, s.sx + frame * s.w, s.sy, s.w, s.h, x, y, s.w, s.h);
   };
+
 }
+
 
 var Game = new function () {
   // Variables
+
   var boards = [];
+
   // le asignamos un nombre lógico a cada tecla que nos interesa
-  var KEY_CODES = { 37: 'left', 39: 'right', 32: 'fire' };
+  var KEY_CODES = {
+    37: 'left',
+    39: 'right',
+    32: 'fire'
+  };
 
   this.keys = {};
+
+  var maxTime = 30 / 1000;
+
+  var lastTime = new Date().getTime();
+
   //Funciones
 
   // Inicialización del juego
@@ -75,18 +93,16 @@ var Game = new function () {
     }, false);
   }
 
-  
-  var maxTime = 30 / 1000;
-  var lastTime = new Date().getTime();
   this.loop = function () {
     // Cada pasada borramos el canvas
     Game.ctx.fillStyle = "#000";
     Game.ctx.fillRect(0, 0, Game.width, Game.height);
     var curTime = new Date().getTime();
     requestAnimationFrame(Game.loop);
-    var dt = (curTime - lastTime)/1000;
-    if(dt > maxTime) { dt = maxTime; }
-
+    var dt = (curTime - lastTime) / 1000;
+    if (dt > maxTime) {
+      dt = maxTime;
+    }
     // y actualizamos y dibujamos todas las entidades
     for (var i = 0, len = boards.length; i < len; i++) {
       if (boards[i]) {
@@ -101,12 +117,18 @@ var Game = new function () {
   this.setBoard = function (num, board) {
     boards[num] = board;
   };
-};
+
+}
 
 // Funciones
 
 var TitleScreen = function TitleScreen(title, subtitle, callback) {
+
+  // Variables
+
   var up = false;
+
+  // Funciones
 
   this.step = function (dt) {
     if (!Game.keys['fire']) up = true;
@@ -121,13 +143,22 @@ var TitleScreen = function TitleScreen(title, subtitle, callback) {
     ctx.font = "bold 20px bangers";
     ctx.fillText(subtitle, Game.width / 2, Game.height / 2 + 140);
   };
+
 };
 
 var GameBoard = function () {
+
+  // Variables
+
   var board = this;
+
   // The current list of objects
   this.objects = [];
+
   this.cnt = {};
+
+  // Funciones
+
   // Add a new object to the object list
   this.add = function (obj) {
     obj.board = this;
@@ -135,8 +166,12 @@ var GameBoard = function () {
     this.cnt[obj.type] = (this.cnt[obj.type] || 0) + 1;
     return obj;
   };
+
   // Reset the list of removed objects
-  this.resetRemoved = function () { this.removed = []; };
+  this.resetRemoved = function () {
+    this.removed = [];
+  };
+
   // Mark an object for removal
   this.remove = function (obj) {
     var idx = this.removed.indexOf(obj);
@@ -147,6 +182,7 @@ var GameBoard = function () {
       return false;
     }
   };
+
   // Removed an objects marked for removal from the list
   this.finalizeRemoved = function () {
     for (var i = 0, len = this.removed.length; i < len; i++) {
@@ -157,6 +193,7 @@ var GameBoard = function () {
       }
     }
   };
+
   // Call the same method on all current objects
   this.iterate = function (funcName) {
     var args = Array.prototype.slice.call(arguments, 1);
@@ -165,6 +202,7 @@ var GameBoard = function () {
       obj[funcName].apply(obj, args);
     }
   };
+
   // Find the first object for which func is true
   this.detect = function (func) {
     for (var i = 0, val = null, len = this.objects.length; i < len; i++) {
@@ -172,6 +210,7 @@ var GameBoard = function () {
     }
     return false;
   };
+
   // Call step on all objects and them delete
   // any object that have been marked for removal
   this.step = function (dt) {
@@ -179,13 +218,36 @@ var GameBoard = function () {
     this.iterate('step', dt);
     this.finalizeRemoved();
   };
+
   // Draw all the objects
   this.draw = function (ctx) {
     this.iterate('draw', ctx);
   };
+
+  // Comprobamos si solapan o no los bounding box
+  this.overlap = function (o1, o2) {
+    return !((o1.y + o1.h - 1 < o2.y) || (o1.y > o2.y + o2.h - 1) ||
+      (o1.x + o1.w - 1 < o2.x) || (o1.x > o2.x + o2.w - 1));
+  };
+
+  // Comprueba la colision
+  this.collide = function (obj, type) {
+    return this.detect(function () {
+      if (obj != this) {
+        var col = (!type || this.type & type) && board.overlap(obj, this);
+        return col ? this : false;
+      }
+    });
+  };
+
 };
 
 var PrintMsg = function (message) {
+
+  // Variables
+
+
+  // Funciones
 
   this.draw = function (ctx) {
     ctx.save();
@@ -195,6 +257,6 @@ var PrintMsg = function (message) {
     ctx.fillText(message, 30, 20);
   }
 
-  this.step = function(dt){};
+  this.step = function (dt) {};
 
 };
