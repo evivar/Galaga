@@ -8,42 +8,42 @@ var sprites = {
         h: 42,
         frames: 1
     },
-    enemy_purple: { // Se mueve desde la esquina izquierda hacia la derecha y hacia abajo
+    enemy_purple: {
         sx: 37,
         sy: 0,
         w: 42,
         h: 43,
         frames: 1
     },
-    enemy_bee: { // Se mueve en grupo hacia abajo y en pequeñas eses
+    enemy_bee: {
         sx: 79,
         sy: 0,
         w: 37,
         h: 43,
         frames: 1
     },
-    enemy_ship: { // Se mueve hacia abajo 
+    enemy_ship: {
         sx: 116,
         sy: 0,
         w: 42,
         h: 43,
         frames: 1
     },
-    enemy_circle: { // Se mueve haciendo eses desde cualquier esquina superior y solo disparan un misil
+    enemy_circle: {
         sx: 158,
         sy: 0,
         w: 32,
         h: 33,
         frames: 1
     },
-    missile: { // Misil del jugador
+    missile: {
         sx: 0,
         sy: 42,
         w: 7,
         h: 20,
         frames: 1
     },
-    enemy_missile: { // Misil del enemigo
+    enemy_missile: {
         sx: 9,
         sy: 42,
         w: 3,
@@ -71,15 +71,24 @@ var OBJECT_PLAYER = 1,
     Utilizamos esta funcion para el movimiento de los enemigos:
         vx = A + B * sin (C * t + D)
         vy = E + F * sin (G * t + H)
+
+        A: Velocidad constante horizontal
+        B: Velocidad sinusoidal horizontal
+        C: Periodo horizontal
+        D: Desfase de la velocidad sinusoidal horizontal
+        E: Velocidad constante vertical
+        F: Velocidad sinusoidal vertical
+        G: Periodo vertical
+        H: Desfase de la velocidad sinusoidal vertical
 */
 
 var enemies = {
     basic: {
-        x: 100,
+        x: 50,
         y: -50,
         sprite: 'enemy_purple',
         B: 100,
-        C: 2,
+        C: 3,
         E: 100
     },
     bee: {
@@ -89,12 +98,32 @@ var enemies = {
         B: 80,
         C: 5,
         E: 50
+    },
+    ship: {
+        x: 0,
+        y: -50,
+        sprite: 'enemy_ship',
+        E: 100
     }
+    /*,
+        cicle: {
+            x:
+            y:
+            sprite: 'enemy_circle',
+            A:
+            B:
+            C:
+            D:
+            E:
+            F:
+            G:
+            H:
+        }*/
 };
 
-
-
-
+/**
+ * 
+ */
 var PlayerShip = function () {
 
     // Variables
@@ -116,42 +145,53 @@ var PlayerShip = function () {
 
     this.reload = this.reloadTime;
 
-    // Funciones
+}
 
-    // Implementa las formulas de los movimientos
-    this.step = function (dt) {
-        // Movimiento de la nave
-        if (Game.keys['left']) {
-            this.vx = -this.maxVel;
-        } else if (Game.keys['right']) {
-            this.vx = this.maxVel;
-        } else {
-            this.vx = 0;
-        }
-        // Para no salirme del tablero
-        this.x += this.vx * dt;
-        if (this.x < 0) {
-            this.x = 0;
-        } else if (this.x > Game.width - this.w) {
-            this.x = Game.width - this.w
-        }
-        // Disparos de la nave
-        this.reload -= dt;
-        if (Game.keys['fire'] && this.reload < 0) {
-            Game.keys['fire'] = false;
-            this.reload = this.reloadTime;
-            this.board.add(new PlayerMissile(this.x, this.y + this.h / 2));
-            this.board.add(new PlayerMissile(this.x + this.w, this.y + this.h / 2));
-        }
-
+/**
+ * Implementa las formulas de los movimientos
+ * @param  {} dt
+ */
+PlayerShip.prototype.step = function (dt) {
+    // Movimiento de la nave
+    if (Game.keys['left']) {
+        this.vx = -this.maxVel;
+    } else if (Game.keys['right']) {
+        this.vx = this.maxVel;
+    } else {
+        this.vx = 0;
     }
-
-    this.draw = function (ctx) {
-        SpriteSheet.draw(ctx, 'ship', this.x, this.y, 0);
+    // Para no salirme del tablero
+    this.x += this.vx * dt;
+    if (this.x < 0) {
+        this.x = 0;
+    } else if (this.x > Game.width - this.w) {
+        this.x = Game.width - this.w
+    }
+    // Disparos de la nave
+    this.reload -= dt;
+    if (Game.keys['fire'] && this.reload < 0) {
+        Game.keys['fire'] = false;
+        this.reload = this.reloadTime;
+        this.board.add(new PlayerMissile(this.x, this.y + this.h / 2));
+        this.board.add(new PlayerMissile(this.x + this.w, this.y + this.h / 2));
     }
 }
 
+/**
+ * Funcion draw de la nave del jugador
+ * @param  {} ctx
+ */
+PlayerShip.prototype.draw = function (ctx) {
+    SpriteSheet.draw(ctx, 'ship', this.x, this.y, 0);
+}
+
+/**
+ * Enemigo
+ * @param {} blueprint 
+ * @param {} override 
+ */
 var Enemy = function (blueprint, override) {
+
     var baseParameters = {
         A: 0,
         B: 0,
@@ -181,8 +221,12 @@ var Enemy = function (blueprint, override) {
     this.t = 0;
 }
 
-// Enemy.prototype.type = OBJECT_ENEMY; // ESTO ES IMPORTANTE
+//Enemy.prototype.type = OBJECT_ENEMY; // ESTO ES IMPORTANTE
 
+/**
+ * Funcion step de los prototipos, implementa las funciones del movimiento de los enemigos
+ * @param {} dt
+ */
 Enemy.prototype.step = function (dt) {
     this.t += dt;
     this.vx = this.A + this.B * Math.sin(this.C * this.t + this.D);
@@ -196,11 +240,19 @@ Enemy.prototype.step = function (dt) {
     }
 }
 
+/**
+ * Funcion draw de los enemigos
+ * @param {} dt
+ */
 Enemy.prototype.draw = function (ctx) {
     SpriteSheet.draw(ctx, this.sprite, this.x, this.y);
 }
 
-
+/**
+ * Misil del jugador
+ * @param {} x 
+ * @param {} y 
+ */
 var PlayerMissile = function (x, y) {
 
     // Variables
@@ -218,28 +270,17 @@ var PlayerMissile = function (x, y) {
     this.vy = -700;
 };
 
-PlayerMissile.prototype.step = function (dt) {
-    this.y += this.vy * dt;
-    if (this.y < -this.h) {
-        this.board.remove(this);
-    }
-};
-
+/**
+ * Funcion draw de los misiles del jugador
+ */
 PlayerMissile.prototype.draw = function (ctx) {
     SpriteSheet.draw(ctx, 'missile', this.x, this.y);
 };
 
-var PlayerMissile = function (x, y) {
-    this.w = SpriteSheet.map['missile'].w;
-    this.h = SpriteSheet.map['missile'].h;
-    // El misil aparece centrado en 'x'
-    this.x = x - this.w / 2;
-    // Con la parte inferior del misil en 'y'
-    this.y = y - this.h;
-    this.vy = -700;
-};
-
-
+/**
+ * Funcion step de los misilees del jugador, siguen una trayectoria recta hasta que se salen del tablero
+ * @param {} dt
+ */
 PlayerMissile.prototype.step = function (dt) {
     this.y += this.vy * dt;
     var collision = this.board.collide(this, OBJECT_ENEMY);

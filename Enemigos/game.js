@@ -32,6 +32,7 @@ var playGame = function () {
     board.add(new Enemy(enemies.bee, {
         x: 250
     }));
+    board.add(new Enemy(enemies.ship));  
     Game.setBoard(0, board);
 };
 
