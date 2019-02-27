@@ -174,7 +174,6 @@ var PlayerShip = function () {
         maxVel: 200
     });
 
-
     // Variables
     this.x = Game.width / 2 - this.w / 2;
 
