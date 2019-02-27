@@ -17,9 +17,9 @@ var startGame = function () {
 }
 
 var playGame = function () {
-    /*Game.setBoard(0, new StarField(20,0.4,100,true));
+    Game.setBoard(0, new StarField(20,0.4,100,true));
     Game.setBoard(1, new StarField(50, 0.6, 100));
-    Game.setBoard(2, new StarField(100, 1.0, 50));*/
+    Game.setBoard(2, new StarField(100, 1.0, 50));
     var board = new GameBoard();
     board.add(new PlayerShip());
     board.add(new Enemy(enemies.basic));
@@ -32,7 +32,7 @@ var playGame = function () {
     board.add(new Enemy(enemies.bee, {
         x: 250
     }));
-    Game.setBoard(0, board);
+    Game.setBoard(3, board);
 };
 
 

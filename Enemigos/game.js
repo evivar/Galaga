@@ -11,31 +11,31 @@ var OBJECT_PLAYER = 1,
 
 // Especifica lo que se debe pintar al cargar el juego
 var startGame = function () {
-    Game.setBoard(0, new TitleScreen("Alien Invasion",
+    Game.setBoard(0, new StarField(20, 0.4, 100, true));
+    Game.setBoard(1, new StarField(50, 0.6, 100));
+    Game.setBoard(2, new StarField(100, 1.0, 50));
+    Game.setBoard(3, new TitleScreen("Alien Invasion",
         "Press fire to start playing",
         playGame));
 }
 
 var playGame = function () {
-    /*Game.setBoard(0, new StarField(20,0.4,100,true));
+    Game.setBoard(0, new StarField(20, 0.4, 100, true));
     Game.setBoard(1, new StarField(50, 0.6, 100));
-    Game.setBoard(2, new StarField(100, 1.0, 50));*/
+    Game.setBoard(2, new StarField(100, 1.0, 50));
     var board = new GameBoard();
     board.add(new PlayerShip());
-    board.add(new Enemy(enemies.basic));
-    board.add(new Enemy(enemies.basic, {
-        x: 200
-    }));
-    board.add(new Enemy(enemies.bee, {
-        x: 200
-    }));
-    board.add(new Enemy(enemies.bee, {
-        x: 250
-    }));
-    board.add(new Enemy(enemies.ship));  
-    Game.setBoard(0, board);
+    board.add(new Level(level1,winGame));
+    Game.setBoard(3, board);
 };
 
+var winGame = function () {
+    Game.setBoard(3, new TitleScreen("You Win!!", "Press fire to play again", playGame));
+}
+
+var loseGame = function () {
+    Game.setBoard(3, new TitleScreen("Game Over", "Press fire to play again", playGame));
+}
 
 // Indica que se llame al método de inicialización una vez
 // se haya terminado de cargar la página HTML
